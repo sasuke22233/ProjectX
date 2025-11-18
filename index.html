@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Безумное Казино - Слот-машина</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <div class="casino-header">
+            <h1>🎰 Безумное Казино 🎰</h1>
+        </div>
+
+        <div class="slots-machine">
+            <div class="slots-display">
+                <div class="slot" id="slot1">
+                    <div class="slot-inner">
+                        <div class="slot-item">?</div>
+                    </div>
+                </div>
+                <div class="slot" id="slot2">
+                    <div class="slot-inner">
+                        <div class="slot-item">?</div>
+                    </div>
+                </div>
+                <div class="slot" id="slot3">
+                    <div class="slot-inner">
+                        <div class="slot-item">?</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="spin-button-container">
+                <button class="spin-button" id="spinButton">
+                    <span class="button-text">🎲 КРУТИТЬ</span>
+                </button>
+            </div>
+
+            <div class="result-message" id="resultMessage"></div>
+        </div>
+
+        <!-- Фейерверки -->
+        <canvas id="fireworksCanvas"></canvas>
+
+        <!-- Звезды -->
+        <div class="stars-container" id="starsContainer"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
