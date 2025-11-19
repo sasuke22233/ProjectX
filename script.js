@@ -26,6 +26,7 @@ const resultMessage = document.getElementById('resultMessage');
 const mainContainer = document.getElementById('mainContainer');
 const fireworksCanvas = document.getElementById('fireworksCanvas');
 const starsContainer = document.getElementById('starsContainer');
+const emojiLayer = document.getElementById('emojiLayer');
 
 // Настройка canvas для фейерверков
 const ctx = fireworksCanvas.getContext('2d');
@@ -35,6 +36,7 @@ fireworksCanvas.height = window.innerHeight;
 // Массив частиц фейерверков
 let fireworks = [];
 let particles = [];
+let clownPopupTimer = null;
 
 // Инициализация
 window.addEventListener('resize', () => {
@@ -211,6 +213,95 @@ function triggerWinEffects() {
     rotateContainer();
 }
 
+// Куча смайликов 💩 при тройном "говно"
+function triggerPoopExplosion() {
+    const poopCount = 45;
+    for (let i = 0; i < poopCount; i++) {
+        const poop = document.createElement('div');
+        poop.className = 'poop-emoji';
+        poop.textContent = '💩';
+        poop.style.left = Math.random() * 100 + '%';
+        poop.style.top = 50 + Math.random() * 40 + '%';
+        poop.style.animationDelay = Math.random() * 0.5 + 's';
+        emojiLayer.appendChild(poop);
+
+        setTimeout(() => {
+            poop.remove();
+        }, 4500);
+    }
+}
+
+// Случайное появление смайлика 🤡
+function scheduleClownPopup() {
+    const minDelay = 2000;
+    const maxDelay = 6000;
+    const delay = Math.random() * (maxDelay - minDelay) + minDelay;
+
+    if (clownPopupTimer) {
+        clearTimeout(clownPopupTimer);
+    }
+
+    clownPopupTimer = setTimeout(() => {
+        createClownPopup();
+    }, delay);
+}
+
+function createClownPopup() {
+    const clown = document.createElement('div');
+    clown.className = 'clown-popup';
+    clown.textContent = '🤡';
+    clown.style.left = Math.random() * 60 + 20 + '%';
+
+    const removePopup = () => {
+        if (clown.isConnected) {
+            clown.remove();
+        }
+        scheduleClownPopup();
+    };
+
+    clown.addEventListener('click', () => {
+        clown.dataset.clicked = 'true';
+        spawnClownChaos(clown);
+    });
+
+    clown.addEventListener('animationend', () => {
+        if (!clown.dataset.clicked) {
+            removePopup();
+        }
+    });
+
+    document.body.appendChild(clown);
+}
+
+function spawnClownChaos(sourceClown) {
+    if (sourceClown.isConnected) {
+        sourceClown.remove();
+    }
+
+    const clownCount = 100;
+    for (let i = 0; i < clownCount; i++) {
+        const clown = document.createElement('div');
+        clown.className = 'clown-swarm';
+        clown.textContent = '🤡';
+        clown.style.left = Math.random() * 100 + '%';
+        clown.style.fontSize = `${Math.random() * 2 + 1}rem`;
+        clown.style.animationDelay = Math.random() * 0.6 + 's';
+        clown.style.animationDuration = 3 + Math.random() * 2 + 's';
+        if (Math.random() > 0.5) {
+            clown.classList.add('spin-right');
+        }
+        emojiLayer.appendChild(clown);
+
+        setTimeout(() => {
+            clown.remove();
+        }, 5000);
+    }
+
+    setTimeout(() => {
+        scheduleClownPopup();
+    }, 5000);
+}
+
 // Функция для отображения результата
 function showResult(slot1Item, slot2Item, slot3Item) {
     resultMessage.classList.remove('show', 'jackpot', 'almost', 'lose');
@@ -220,6 +311,9 @@ function showResult(slot1Item, slot2Item, slot3Item) {
             resultMessage.textContent = `🔥🔥🔥 ДЖЕКПОТ! ТРОЙНОЕ ${slot1Item.toUpperCase()}! 🔥🔥🔥`;
             resultMessage.classList.add('show', 'jackpot');
             triggerWinEffects();
+            if (slot1Item === 'говно') {
+                triggerPoopExplosion();
+            }
         } else if (slot1Item === slot2Item || slot2Item === slot3Item || slot1Item === slot3Item) {
             resultMessage.textContent = 'Почти получилось! Два совпадения.';
             resultMessage.classList.add('show', 'almost');
@@ -268,4 +362,10 @@ document.addEventListener('keydown', (e) => {
         spinSlots();
     }
 });
+
+// Запуск случайных попапов клоуна
+setTimeout(() => {
+    createClownPopup();
+    scheduleClownPopup();
+}, 1500);
 
